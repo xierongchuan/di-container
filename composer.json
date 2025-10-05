@@ -26,6 +26,6 @@
     "squizlabs/php_codesniffer": "^4.0"
   },
   "scripts": {
-    "test": "vendor/bin/phpunit"
+    "test": "vendor/bin/phpunit tests/"
   }
 }
