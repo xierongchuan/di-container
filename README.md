@@ -17,7 +17,7 @@ docker compose build
 
 ## Run
 ```bash
-docker compose run --rm app php Example/usage.php
+docker compose run --rm app php Example/Usage.php
 ```
 
 ## Test
