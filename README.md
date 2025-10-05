@@ -12,15 +12,15 @@
 
 ## Build
 ```bash
-docker-compose build
+docker compose build
 ```
 
 ## Run
 ```bash
-docker-compose run --rm app php examples/usage.php
+docker compose run --rm app php examples/usage.php
 ```
 
 ## Test
 ```bash
-docker-compose run --rm app vendor/bin/phpunit
+docker compose run --rm app vendor/bin/phpunit
 ```
