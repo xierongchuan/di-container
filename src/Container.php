@@ -10,6 +10,7 @@ use Closure;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
+use ReflectionNamedType;
 
 /**
  * Легковесный DI контейнер.
@@ -89,7 +90,29 @@ class Container implements ContainerInterface
     */
     protected function build(string $concrete): object
     {
-        //
+        try {
+            $reflector = new ReflectionClass($concrete);
+        } catch (ReflectionException $e) {
+            throw new ContainerException("Класс '{$concrete}' не существует.", 0, $e);
+        }
+
+        // Проверяем можно ли создать экземпляр этого класса.
+        if (!$reflector->isInstantiable()) {
+            throw new ContainerException("Класс '{$concrete}' не может быть инстанциирован.");
+        }
+
+        $constructor = $reflector->getConstructor();
+
+        // Если конструктора/зависимостей нет создаем объект.
+        if ($constructor === null) {
+            return new $concrete();
+        }
+
+        $parameters = $constructor->getParameters();
+        $dependencies = $this->resolveParameters($parameters);
+
+        // Создаем экземпляр класса передавая разрешенные зависимости в конструктор.
+        return $reflector->newInstanceArgs($dependencies);
     }
 
     /**
@@ -102,7 +125,27 @@ class Container implements ContainerInterface
     {
         $dependencies = [];
 
-        //
+        foreach ($parameters as $parameter) {
+            $type = $parameter->getType();
+
+            // Если у параметра нет type-hint или это встроенный тип string/int мы не можем его разрешить.
+            if ($type === null || ($type instanceof ReflectionNamedType && $type->isBuiltin())) {
+                // Проверяем естьли у параметра значение по умолчанию.
+                if ($parameter->isDefaultValueAvailable()) {
+                    $dependencies[] = $parameter->getDefaultValue();
+                    continue;
+                }
+                throw new ContainerException(
+                    "Невозможно разрешить зависимость '{$parameter->getName()}' без type-hint."
+                );
+            }
+
+            // Получаем имя класса/интерфейса из TypeHint
+            $dependencyClass = $type instanceof ReflectionNamedType ? $type->getName() : (string) $type;
+
+            // Рекурсивный вызов. Просим контейнер разрешить зависимость
+            $dependencies[] = $this->get($dependencyClass);
+        }
 
         return $dependencies;
     }
