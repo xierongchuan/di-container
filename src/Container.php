@@ -7,6 +7,9 @@ namespace App;
 use App\Exceptions\ContainerException;
 use Psr\Container\ContainerInterface;
 use Closure;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionParameter;
 
 /**
  * Легковесный DI контейнер.
@@ -76,5 +79,31 @@ class Container implements ContainerInterface
     public function has(string $id): bool
     {
         //
+    }
+
+    /**
+    * Основной метод для построения объекта и его зависимостей через рефлексию.
+    *
+    * @param string $concrete Имя конкретного класса.
+    * @return object
+    */
+    protected function build(string $concrete): object
+    {
+        //
+    }
+
+    /**
+     * Разрешает зависимости для параметров конструктора (TypeHint)
+     *
+     * @param ReflectionParameter[] $parameters
+     * @return array
+     */
+    protected function resolveParameters(array $parameters): array
+    {
+        $dependencies = [];
+
+        //
+
+        return $dependencies;
     }
 }
