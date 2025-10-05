@@ -45,6 +45,17 @@ class Container implements ContainerInterface
     }
 
     /**
+     * Метод для регистрации одиночки.
+     *
+     * @param string $abstract
+     * @param string|Closure|null $concrete
+     */
+    public function singleton(string $abstract, string|Closure|null $concrete = null): void
+    {
+        $this->bind($abstract, $concrete, true);
+    }
+
+    /**
      * Разрешает (создает и возвращает) зависимость из контейнера.
      *
      * @param string $id Идентификатор/абстракция зависимости.
