@@ -35,7 +35,7 @@ class Container implements ContainerInterface
      * @param string|Closure|null $concrete Конкретная реализация или фабрика.
      * @param bool $singleton Является ли зависимость одиночкой.
      */
-    public function bind(string $abstract, string|Closure|null $concrete, bool $singleton = false): void
+    public function bind(string $abstract, string|Closure|null $concrete = null, bool $singleton = false): void
     {
         // Если конкретная реализация не указана, считаем, что абстракция является реализацией.
         if ($concrete === null) {
