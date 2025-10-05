@@ -68,7 +68,30 @@ class Container implements ContainerInterface
      */
     public function get(string $id): mixed
     {
-        //
+        // Проверяем, есть ли уже готовый экземпляр-одиночка
+        if (isset($this->instances[$id])) {
+            return $this->instances[$id];
+        }
+
+        // Ищем "рецепт" для создания в биндингах
+        $binding = $this->bindings[$id] ?? ['concrete' => $id, 'singleton' => false];
+        $concrete = $binding['concrete'];
+
+        // Создаем объект
+        // Если рецепт это фабрика/замыкание то просто вызываем ее,
+        // иначе строим объект с помощью рефлексии
+        if ($concrete instanceof Closure) {
+            $object = $concrete($this);
+        } else {
+            $object = $this->build($concrete);
+        }
+
+        // Eсли это одиночка сохраняем экземпляр для будущих запросов
+        if ($binding['singleton']) {
+            $this->instances[$id] = $object;
+        }
+
+        return $object;
     }
 
     /**
