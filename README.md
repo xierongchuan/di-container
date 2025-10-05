@@ -22,5 +22,5 @@ docker compose run --rm app php Example/Usage.php
 
 ## Test
 ```bash
-docker compose run --rm app vendor/bin/phpunit
+docker-compose run --rm app vendor/bin/phpunit tests/
 ```
