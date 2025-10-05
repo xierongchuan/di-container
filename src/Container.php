@@ -87,6 +87,7 @@ class Container implements ContainerInterface
     *
     * @param string $concrete Имя конкретного класса.
     * @return object
+    * @throws ContainerException
     */
     protected function build(string $concrete): object
     {
